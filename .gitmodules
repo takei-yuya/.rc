@@ -1,0 +1,9 @@
+[submodule "sources/30_public"]
+	path = sources/30_public
+	url = git@github.com:takei-yuya/.rc.public
+[submodule "sources/70_work"]
+	path = sources/70_work
+	url = git@github.com:takei-yuya/.rc.work
+[submodule "sources/50_private"]
+	path = sources/50_private
+	url = git@github.com:takei-yuya/.rc.private
