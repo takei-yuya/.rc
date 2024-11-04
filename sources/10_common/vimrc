@@ -1,0 +1,298 @@
+scriptencoding utf-8
+
+augroup vimrc
+  autocmd!
+augroup END
+
+if version >= 802
+  let s:dein_dir = $HOME . '/.vim/dein'
+  let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+
+  if isdirectory(s:dein_repo_dir)
+    execute 'set runtimepath+=' . s:dein_repo_dir
+    if dein#load_state(s:dein_dir)
+      call dein#begin(s:dein_dir)
+      call dein#add('rust-lang/rust.vim')
+      call dein#add('prabirshrestha/vim-lsp')
+      call dein#add('mattn/vim-lsp-settings')
+      call dein#end()
+      call dein#save_state()
+    endif
+
+    if dein#check_install()
+      call dein#install()
+    endif
+  endif
+endif
+
+filetype plugin on
+filetype indent on
+syntax on
+
+set nocompatible
+set ttimeoutlen=10
+set tabpagemax=100
+set modelines=5
+set diffopt=filler,icase,iwhite
+set noerrorbells
+set noinsertmode
+set visualbell
+set backspace=indent,start,eol
+set fileformats=unix,dos,mac
+set helplang=en,ja
+set nrformats-=octal
+set nrformats+=alpha
+set background=dark
+if exists('&ambiwidth')
+  set ambiwidth=single
+endif
+set sessionoptions=blank,curdir,resize,tabpages,winsize
+
+set cmdheight=1
+set cursorline
+set cursorcolumn
+set fillchars=stl:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:-
+set laststatus=2
+set list
+set listchars=tab:>\ ,trail:_,precedes:<,extends:>,nbsp:█
+set number
+set ruler
+set shortmess=aOtT
+set showbreak=(cond.)\ 
+set cpoptions+=n
+set cpoptions+={
+set showcmd
+set showmode
+" n: buffer #, f: file, a (# of #) formed text for argument list,
+" m,r,h,w,y,q: [xxx] formed text for modified(m), readonly(r), help(h), preview(y), type and quickfix(q)
+" l,c,V: number of line, column and virtual column (for wraped text),
+" o: byte num at current pos, B: char code under cursor, p: scroll pos in %.
+set statusline=%n:%<
+set statusline+=\ %{&bomb?'💣':''}%f%a
+set statusline+=\ %m%r%h%w%y
+set statusline+=[%{&fenc!=''?&fenc:&enc}][%{&ff}]
+set statusline+=%{exists('*SkkGetModeStr')?SkkGetModeStr():''}
+set statusline+=%=
+set statusline+=pos:%l,%c%V
+set statusline+=\ %6obytes
+set statusline+=\ 0x%04B
+set statusline+=\ %03p%%
+set nowrap
+set display=lastline
+set notitle
+set pumheight=10
+
+set textwidth=120
+if exists('&colorcolumn')
+  set colorcolumn=+0
+endif
+
+set showtabline=2
+set hidden
+set nosplitbelow
+set splitright
+
+set hlsearch
+set ignorecase
+set incsearch
+set matchpairs+=<:>
+set matchtime=3
+set showmatch
+set smartcase
+set nowrapscan
+
+"set complete=.,w,b,u,U,t,i,d,k
+set spelllang=en_gb
+set spellcapcheck=
+set complete=.,w,b,u,kspell,s,d
+set completeopt=menuone,longest,noinsert,noselect,preview
+set tags=$HOME/.vimfiles/tags/*,tags,../tags,./*/tags,$HOME/.tags/*/tags
+set wildmenu
+set wildmode=list:longest
+
+set autoindent
+"(: open parenthesis, N: namespace, E:extern, g: C++ scope, h: next of C++ scope, :: case label
+set cinoptions=(0N-sE-sg1h1:1
+set copyindent
+set smartindent
+set formatoptions+=nMlm
+set formatoptions-=to
+set expandtab
+set sts=2
+set ts=2
+set sw=2
+
+setlocal expandtab
+setlocal softtabstop=2
+setlocal shiftwidth=2
+setlocal tabstop=2
+
+" Local vimrc
+augroup localvimrc
+  autocmd!
+  autocmd BufNewFile,BufReadPost * call s:localvimrc(expand('<afile>:p:h'))
+  autocmd BufReadPre .localvimrc set ft=vim
+augroup END
+function! s:localvimrc(loc)
+  let files = findfile('.localvimrc', escape(a:loc, ' ') . ';', -1)
+  for i in reverse(filter(files, 'filereadable(v:val)'))
+    source `=i`
+  endfor
+endfunction
+
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=ucs-bom,iso-2022-jp,utf-8,euc-jp,sjis,cp932
+set termencoding=utf-8
+if has('autocmd')
+  autocmd vimrc BufReadPost * call AU_ReCheck_FENC()
+  function! AU_ReCheck_FENC()
+    if &fileencoding =~# 'iso-2022-jp' && search("[^\x01-\x7e]", 'n') == 0
+      let &fileencoding=&encoding
+    endif
+  endfunction
+endif
+
+set backup
+set backupdir=$HOME/.vim/backup/
+set viewdir=$HOME/.vim/view/
+set backupskip=/tmp/*,/private/tmp/*
+if has('persistent_undo')
+  set undodir=$HOME/.vim/undo/
+  set undofile
+endif
+if has("autocmd")
+  autocmd vimrc BufWritePre * call UpdateBackupFile()
+  function! UpdateBackupFile()
+    let now = localtime()
+    let dir = strftime($HOME . "/.vim/backup/%Y/%m/%d", localtime())
+    let ext = strftime("%H_%M_%S", localtime())
+    if !isdirectory(dir)
+      call mkdir(dir, "p", 0775)
+    endif
+    exe "set backupdir=" . dir
+    exe "set backupext=." . ext
+    unlet dir
+    unlet ext
+    unlet now
+  endfunction
+endif
+
+nmap n nzz
+nmap N Nzz
+nmap * *zz
+nmap # #zz
+nmap g* g*zz
+nmap g# g#zz
+nmap j gj
+nmap k gk
+
+nmap Y y$
+
+nmap <ESC><ESC> :nohlsearch<CR><ESC>
+
+" for iPad magic keyboard
+map ¥ <Leader>
+
+map <Leader>mm :set aw \| make \| set noaw<CR>
+map <Leader>mn :set aw \| make clean \| set noaw<CR>
+map <Leader>m, :set aw \| make check VERBOSE=1 \| set noaw<CR>
+
+nmap \swq :wa<Bar>exe "mksession! ".v:this_session <CR>:qa<CR>
+nmap \sww :wa<Bar>exe "mksession! ".v:this_session <CR>
+nmap \sw :mksession! $HOME/.vimfiles/sessions/
+nmap \se :so $HOME/.vimfiles/sessions/
+
+map [H <Home>
+map! [H <Home>
+map [F <End>
+map! [F <End>
+
+nmap gc `[v`]
+vmap gc :<C-u>normal gc<Enter>
+omap gc :<C-u>normal gc<Enter>
+
+imap <C-@> <C-p>
+
+highlight Comment ctermfg=5
+highlight Pmenu ctermbg=4
+highlight PmenuSel ctermbg=1
+highlight PMenuSbar ctermbg=4
+highlight StatusLineNC ctermbg=black ctermfg=darkgray
+highlight NonText ctermfg=darkgray
+highlight SpecialKey ctermfg=darkgray
+highlight CursorLine NONE cterm=underline,bold
+highlight CursorColumn NONE cterm=bold
+highlight SpellBad None cterm=reverse
+highlight ZenkakuSpace cterm=underline ctermbg=white ctermfg=black
+autocmd vimrc VimEnter,WinEnter * match ZenkakuSpace /　/
+
+if has( "autocmd" )
+  autocmd vimrc BufReadPost * if 0 < line("'\"") && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+endif
+
+if !exists(":DiffOrig")
+  command DiffOrig vert new | setlocal bt=nofile | r # | 0d_ | diffthis
+        \ | wincmd p | diffthis
+endif
+highlight DiffAdd    None cterm=bold ctermbg=Black
+highlight DiffDelete None cterm=bold ctermbg=Black
+highlight DiffChange None cterm=none ctermbg=Black
+highlight DiffText   None cterm=bold,underline ctermbg=DarkRed
+
+" Zenkaku
+digraph JS 12288  " U+3000 IDEOGRAPHIC SPACE
+digraph J0 65296  " U+FF10 ZENKAKU DIGIT ZERO
+digraph J1 65297  " U+FF11 ZENKAKU DIGIT ONE
+digraph J2 65298  " U+FF12 ZENKAKU DIGIT TWO
+digraph J3 65299  " U+FF13 ZENKAKU DIGIT THREE
+digraph J4 65300  " U+FF14 ZENKAKU DIGIT FOUR
+digraph J5 65301  " U+FF15 ZENKAKU DIGIT FIVE
+digraph J6 65302  " U+FF16 ZENKAKU DIGIT SIX
+digraph J7 65303  " U+FF17 ZENKAKU DIGIT SEVEN
+digraph J8 65304  " U+FF18 ZENKAKU DIGIT EIGHT
+digraph J9 65305  " U+FF19 ZENKAKU DIGIT NINE
+
+" Spaces
+digraph NS 160    " U+00A0 NO-BREAK SPACE
+digraph QN 8192   " U+2000 EN QUAD
+digraph QM 8193   " U+2001 EM QUAD
+digraph 1N 8194   " U+2002 EN SPACE (redifined)
+digraph 1M 8195   " U+2003 EM SPACE (redifined)
+digraph 3M 8196   " U+2004 THREE-PER-EM SPACE (redifined)
+digraph 4M 8197   " U+2005 FOUR-PER-EM SPACE (redifined)
+digraph 6M 8198   " U+2006 SIX-PER-EM SPACE (redifined)
+digraph Fs 8199   " U+2007 FIGURE SPACE
+digraph Ps 8200   " U+2008 PUNCTUATION SPACE
+digraph 1T 8201   " U+2009 THIN SPACE (redifined)
+digraph 1H 8202   " U+200A HAIR SPACE (redifined)
+digraph NN 8239   " U+202F NARROW NO-BREAK SPACE
+
+" Zero Width Spaces
+digraph ZS 8203   " U+200B ZERO WIDTH SPACE
+digraph ZN 8204   " U+200C ZERO WIDTH NON-JOINER
+digraph ZJ 8205   " U+200D ZERO WIDTH JOINER (override)
+digraph WJ 8288   " U+2060 WORD JOINER
+digraph Fa 8289   " U+2061 FUNCTION APPLICATION
+digraph It 8290   " U+2062 INVISIBLE TIMES
+digraph Is 8291   " U+2063 INVISIBLE SEPARATOR
+digraph Ip 8292   " U+2064 INVISIBLE PLUS
+digraph BM 65279  " U+FEFF ZERO WIDTH NO-BREAK SPACE(BOM)
+
+" Hyphens
+digraph -1 8208   " U+2010 HYPHEN (redifined)
+digraph -B 8209   " U+2011 NON-BREAKING HYPHEN
+digraph -F 8210   " U+2012 FIGURE DASH
+digraph -N 8211   " U+2013 EN DASH (redifined)
+digraph -M 8212   " U+2014 EM DASH (redifined)
+digraph -3 8213   " U+2015 HORIZONTAL BAR (redifined)
+digraph -2 8722   " U+2212 MINUS SIGN (redifined)
+
+" Separators
+digraph LS 8232   " U+2028 LINE SEPARATOR
+digraph PS 8233   " U+2029 PARAGRAPH SEPARATOR
+
+" Specials
+digraph ?? 65533  " U+FFFD REPLACEMENT CHARACTER
+digraph UE 65534  " U+FFFE UNDEFINED CHARACTER
+digraph UF 65535  " U+FFFF UNDEFINED CHARACTER
