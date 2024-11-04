@@ -66,6 +66,9 @@ for d in backup bundle dein history pack undo view; do
   ln -svTf "${HOME}/.vimfiles/${d}" "${dotfile_tmp_dir}/vim/${d}"
 done
 
+log_info "Build bashrc"
+./scripts/gen_bashrc.sh "${dotfile_tmp_dir}/"
+
 old_dotfiles="$(readlink -m dotfiles)"
 if [ -d "${old_dotfiles}" ]; then
 
