@@ -1,0 +1,19 @@
+# Last Change: 2011/07/03 03:19:44.
+#set editing-mode vi
+#set keymap vi
+#set visible-stats On
+#
+set show-all-if-ambiguous on
+#
+set meta-flag on
+set convert-meta off
+set input-meta on
+set output-meta on
+
+"\C-n": history-search-forward
+"\C-p": history-search-backward
+
+set bell-style none
+
+set colored-completion-prefix on
+set menu-complete-display-prefix on

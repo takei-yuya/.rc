@@ -1,0 +1,40 @@
+# Last Change: 2011/04/04 16:47:55.
+autodetach on
+defbce on
+vbell off
+defscrollback 10000
+startup_message off
+hardstatus alwayslastline
+caption always "%{= wk} %-Lw%{=bu dr}%n%f %t%{= wk}%+Lw %=%H LoadAvg: %l  %c:%s "
+altscreen on
+defencoding UTF-8
+defutf8 on
+
+bind N colon 'number '   # replace non-useful default N to change tab number
+bind w windowlist -b     # show window list instead of 1-line window list
+bind ^W windowlist -b -m # same as above but in MRU order
+bind ^G                  # kill binding to toggle vbell
+# bind F eval 'scrollback 0' 'scrollback 10000' 'echo "scrollback buffer cleared"'
+zombie kr #  k: destory window, r: resurrect window
+verbose on
+
+bind 0 select 0
+bind 1 select 1
+bind 2 select 2
+bind 3 select 3
+bind 4 select 4
+bind 5 select 5
+bind 6 select 6
+bind 7 select 7
+bind 8 select 8
+bind 9 select 9
+
+#autodetach on
+#defbce on
+#vbell off
+#defscrollback 10000
+#startup_message off
+#hardstatus on
+#hardstatus alwayslastline
+#hardstatus string "%{= wk} %-w%{=bu dr}%n %t%{-}%+w %=%{..k}%H LoadAvg: %l  %c "
+#caption always "%{= wk} %-w%{=bu dr}%n %t%{-}%+w"
