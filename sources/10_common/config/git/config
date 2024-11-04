@@ -1,0 +1,65 @@
+# vim: syntax=gitconfig
+
+[alias]
+  st = status
+  br = branch
+  ci = commit
+  reci = commit --edit --file=.git/COMMIT_EDITMSG
+  sw = switch
+  res = restore
+  gr = log --graph --date-order -C -M --pretty=format:\"%C(auto)<%h> %ad [%aN %G?] %d %s%Creset\" --all --date=short --decorate=full
+  ff = merge --ff-only
+  fa = fetch --all
+  pr = fetch origin "+refs/heads/*:refs/remotes/origin/*" "+refs/pull/*/head:refs/remotes/origin/pr/*"
+  rebases = rebase --exec 'git commit --amend --no-edit --no-verify --gpg-sign'
+
+  reset-timestamp = !git ls-files -z | xargs -0 touch -d "@$(git log -n1 --format="%at")"
+  dist-name = !printf "%s-%s" "$(basename ${PWD})" "$(git describe --tag --always --dirty)"
+
+  tar-gz = ! \
+    git reset-timestamp && \
+    git archive --format tar --prefix=$(git dist-name)/ HEAD | gzip --no-name > $(git dist-name).tar.gz && \
+    echo "$(git dist-name).tar.gz"
+
+  tar-bz2 = ! \
+    git reset-timestamp && \
+    git archive --format tar --prefix=$(git dist-name)/ HEAD | bzip2 > $(git dist-name).tar.bz2 && \
+    echo "$(git dist-name).tar.bz2"
+
+[color]
+  ui = auto
+  diff = auto
+  branch = auto
+  status = auto
+  interactive = auto
+
+[pull]
+  ff = only
+
+[push]
+  default = nothing
+
+[grep]
+  lineNumber = true
+
+[notes]
+  displayRef = *
+
+[diff]
+  algorithm = histogram
+
+[core]
+  editor = vim
+
+[user]
+  useConfigOnly = true
+
+[rebase]
+  autosquash = true
+
+[mailmap]
+  file = ~/.config/git/mailmap
+
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+
