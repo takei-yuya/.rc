@@ -1,11 +1,13 @@
 #!/bin/bash
 
 set -euo pipefail
+shopt -s nullglob
 
 cd "$(dirname "$0")"
 
 ts="$(date +"%Y%M%S%H%M%S")"
 dotfile_dir="dotfiles_${ts}"
+dotfile_tmp_dir="dotfiles_${ts}.tmp"
 log_info() {
   printf "\x1b[32m%s\x1b[m\n" "$1"
 }
@@ -44,23 +46,24 @@ merge() {
   fi
 }
 
-mkdir "${dotfile_dir}"
+mkdir "${dotfile_tmp_dir}"
+trap "rm -rf ${dotfile_tmp_dir}" EXIT
 
 log_info "Merge dotfiles"
 for src in sources/*/; do
-  merge "${src}" "${dotfile_dir}"
+  merge "${src}" "${dotfile_tmp_dir}"
 done
 
 log_info "Ensure permission"
-chmod 600 "${dotfile_dir}/ssh/config"
-chmod 600 "${dotfile_dir}/ssh/allowed_signers"
-chmod 600 "${dotfile_dir}/ssh/authorized_keys"
+chmod 600 "${dotfile_tmp_dir}/ssh/config"
+chmod 600 "${dotfile_tmp_dir}/ssh/allowed_signers"
+chmod 600 "${dotfile_tmp_dir}/ssh/authorized_keys"
 
 log_info "Setup local directories"
-mkdir -p "${dotfile_dir}/vim"
+mkdir -p "${dotfile_tmp_dir}/vim"
 for d in backup bundle dein history pack undo view; do
   mkdir -p "${HOME}/.vimfiles/${d}"
-  ln -svTf "${HOME}/.vimfiles/${d}" "${dotfile_dir}/vim/${d}"
+  ln -svTf "${HOME}/.vimfiles/${d}" "${dotfile_tmp_dir}/vim/${d}"
 done
 
 old_dotfiles="$(readlink -m dotfiles)"
@@ -68,22 +71,24 @@ if [ -d "${old_dotfiles}" ]; then
 
   # Some files are not managed by git(e.g. ~/.config/github-copilot/), so need to copy them
   log_info "Copy unmanaged files"
-  comm -23 <(cd "${old_dotfiles}" && find -type f | sort) <(cd "${dotfile_dir}" && find -type f | sort) | while read -r f; do
+  comm -23 <(cd "${old_dotfiles}" && find -type f | sort) <(cd "${dotfile_tmp_dir}" && find -type f | sort) | while read -r f; do
     dir="$(dirname "${f}")"
-    mkdir -p "${dotfile_dir}/${dir}"
-    ln -vT "${old_dotfiles}/${f}" "${dotfile_dir}/${f}"  # use hard link
+    mkdir -p "${dotfile_tmp_dir}/${dir}"
+    ln -vT "${old_dotfiles}/${f}" "${dotfile_tmp_dir}/${f}"  # use hard link
   done
 
   log_info "Check diff"
-  if diff -r "${old_dotfiles}" "${dotfile_dir}"; then
+  if diff -r "${old_dotfiles}" "${dotfile_tmp_dir}"; then
     log_info "dotfiles are same as before. exit."
-    rm -rf "${dotfile_dir}"
+    rm -rf "${dotfile_tmp_dir}"
     exit 0
   fi
 
+  log_info "Backup old dotfiles"
   mv -v "${old_dotfiles}" "${old_dotfiles}.old"
 fi
 log_info "Switch dotfiles"
+mv "${dotfile_tmp_dir}" "${dotfile_dir}"
 ln -svTf "${dotfile_dir}" dotfiles
 
 log_info "Link to home"
