@@ -1,0 +1,20 @@
+# vim: syntax=sshconfig
+
+# Common
+Host *
+  Protocol 2
+  RekeyLimit default 60
+
+  Compression yes
+  ServerAliveInterval 60
+  ServerAliveCountMax 3
+  ConnectionAttempts 3
+  TCPKeepAlive yes
+
+  SendEnv TERM
+
+  ForwardAgent yes
+
+  NoHostAuthenticationForLocalhost yes
+  UpdateHostKeys ask
+

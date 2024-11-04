@@ -51,6 +51,11 @@ for src in sources/*/; do
   merge "${src}" "${dotfile_dir}"
 done
 
+log_info "Ensure permission"
+chmod 600 "${dotfile_dir}/ssh/config"
+chmod 600 "${dotfile_dir}/ssh/allowed_signers"
+chmod 600 "${dotfile_dir}/ssh/authorized_keys"
+
 log_info "Setup local directories"
 mkdir -p "${dotfile_dir}/vim"
 for d in backup bundle dein history pack undo view; do
