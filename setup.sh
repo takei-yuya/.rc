@@ -50,7 +50,7 @@ mkdir "${dotfile_tmp_dir}"
 trap "rm -rf ${dotfile_tmp_dir}" EXIT
 
 log_info "Merge dotfiles"
-for src in sources/*/; do
+for src in sources/*/dotfiles; do
   merge "${src}" "${dotfile_tmp_dir}"
 done
 
