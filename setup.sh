@@ -54,6 +54,11 @@ for src in sources/*/dotfiles; do
   merge "${src}" "${dotfile_tmp_dir}"
 done
 
+log_info "Merge config"
+for src in sources/*/config; do
+  merge "${src}" "${dotfile_tmp_dir}/.config"
+done
+
 log_info "Ensure permission"
 chmod go-rwx -R "${dotfile_tmp_dir}"
 
@@ -96,4 +101,10 @@ log_info "Link to home"
 for entry in dotfiles/*; do
   basename="$(basename "${entry}")"
   ln -svTf "${PWD}/dotfiles/${basename}" "${HOME}/.${basename}"
+done
+
+log_info "Link to .config"
+for entry in dotfiles/.config/*; do
+  basename="$(basename "${entry}")"
+  ln -svTf "${PWD}/dotfiles/.config/${basename}" "${HOME}/.config/${basename}"
 done
