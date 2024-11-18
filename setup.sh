@@ -55,9 +55,7 @@ for src in sources/*/dotfiles; do
 done
 
 log_info "Ensure permission"
-chmod 600 "${dotfile_tmp_dir}/ssh/config"
-chmod 600 "${dotfile_tmp_dir}/ssh/allowed_signers"
-chmod 600 "${dotfile_tmp_dir}/ssh/authorized_keys"
+chmod go-rwx -R "${dotfile_tmp_dir}"
 
 log_info "Setup local directories"
 mkdir -p "${dotfile_tmp_dir}/vim"
