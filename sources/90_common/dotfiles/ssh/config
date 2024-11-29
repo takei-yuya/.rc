@@ -18,3 +18,4 @@ Host *
   NoHostAuthenticationForLocalhost yes
   UpdateHostKeys ask
 
+  UserKnownHostsFile ~/.var/ssh/known_hosts

@@ -62,11 +62,13 @@ done
 log_info "Ensure permission"
 chmod go-rwx -R "${dotfile_tmp_dir}"
 
-log_info "Setup local directories"
+log_info "Setup local variable directories"
+mkdir -p "${HOME}/.var/"{ssh,vim}
+chmod go-rwx -R "${HOME}/.var/"
 mkdir -p "${dotfile_tmp_dir}/home/vim"
 for d in backup bundle dein history pack undo view; do
-  mkdir -p "${HOME}/.vimfiles/${d}"
-  ln -svTf "${HOME}/.vimfiles/${d}" "${dotfile_tmp_dir}/home/vim/${d}"
+  mkdir -p "${HOME}/.var/vim/${d}"
+  ln -svTf "${HOME}/.var/vim/${d}" "${dotfile_tmp_dir}/home/vim/${d}"
 done
 
 log_info "Build bashrc"
