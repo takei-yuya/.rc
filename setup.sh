@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -euo pipefail
-shopt -s nullglob
+shopt -s nullglob dotglob
 
 cd "$(dirname "$0")"
 
@@ -51,26 +51,26 @@ trap "rm -rf ${dotfile_tmp_dir}" EXIT
 
 log_info "Merge dotfiles"
 for src in sources/*/dotfiles; do
-  merge "${src}" "${dotfile_tmp_dir}"
+  merge "${src}" "${dotfile_tmp_dir}/home"
 done
 
 log_info "Merge config"
 for src in sources/*/config; do
-  merge "${src}" "${dotfile_tmp_dir}/.config"
+  merge "${src}" "${dotfile_tmp_dir}/config"
 done
 
 log_info "Ensure permission"
 chmod go-rwx -R "${dotfile_tmp_dir}"
 
 log_info "Setup local directories"
-mkdir -p "${dotfile_tmp_dir}/vim"
+mkdir -p "${dotfile_tmp_dir}/home/vim"
 for d in backup bundle dein history pack undo view; do
   mkdir -p "${HOME}/.vimfiles/${d}"
-  ln -svTf "${HOME}/.vimfiles/${d}" "${dotfile_tmp_dir}/vim/${d}"
+  ln -svTf "${HOME}/.vimfiles/${d}" "${dotfile_tmp_dir}/home/vim/${d}"
 done
 
 log_info "Build bashrc"
-./scripts/gen_bashrc.sh "${dotfile_tmp_dir}/"
+./scripts/gen_bashrc.sh "${dotfile_tmp_dir}/home/"
 
 old_dotfiles="$(readlink -m dotfiles)"
 if [ -d "${old_dotfiles}" ]; then
@@ -98,13 +98,13 @@ mv "${dotfile_tmp_dir}" "${dotfile_dir}"
 ln -svTf "${dotfile_dir}" dotfiles
 
 log_info "Link to home"
-for entry in dotfiles/*; do
+for entry in dotfiles/home/*; do
   basename="$(basename "${entry}")"
-  ln -svTf "${PWD}/dotfiles/${basename}" "${HOME}/.${basename}"
+  ln -svTf "${PWD}/dotfiles/home/${basename}" "${HOME}/.${basename}"
 done
 
 log_info "Link to .config"
-for entry in dotfiles/.config/*; do
+for entry in dotfiles/config/*; do
   basename="$(basename "${entry}")"
-  ln -svTf "${PWD}/dotfiles/.config/${basename}" "${HOME}/.config/${basename}"
+  ln -svTf "${PWD}/dotfiles/config/${basename}" "${HOME}/.config/${basename}"
 done
