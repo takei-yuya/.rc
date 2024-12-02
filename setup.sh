@@ -50,7 +50,7 @@ mkdir "${dotfile_tmp_dir}"
 trap "rm -rf ${dotfile_tmp_dir}" EXIT
 
 log_info "Merge dotfiles"
-for src in sources/*/dotfiles; do
+for src in sources/*/home; do
   merge "${src}" "${dotfile_tmp_dir}/home"
 done
 
@@ -76,7 +76,6 @@ log_info "Build bashrc"
 
 old_dotfiles="$(readlink -m dotfiles)"
 if [ -d "${old_dotfiles}" ]; then
-
   # Some files are not managed by git(e.g. ~/.config/github-copilot/), so need to copy them
   log_info "Copy unmanaged files"
   comm -23 <(cd "${old_dotfiles}" && find -type f | sort) <(cd "${dotfile_tmp_dir}" && find -type f | sort) | while read -r f; do
@@ -101,12 +100,14 @@ ln -svTf "${dotfile_dir}" dotfiles
 
 log_info "Link to home"
 for entry in dotfiles/home/*; do
+  # home以下は . を先頭に付与しつつリンクを貼る
   basename="$(basename "${entry}")"
   ln -svTf "${PWD}/dotfiles/home/${basename}" "${HOME}/.${basename}"
 done
 
 log_info "Link to .config"
 for entry in dotfiles/config/*; do
+  # config以下にリンクを貼る
   basename="$(basename "${entry}")"
   ln -svTf "${PWD}/dotfiles/config/${basename}" "${HOME}/.config/${basename}"
 done
