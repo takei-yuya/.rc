@@ -5,6 +5,10 @@ after esc add_path colour
 
 function load()
 {
+  if [ -f /usr/share/git-core/contrib/completion/git-prompt.sh ]; then
+    source /usr/share/git-core/contrib/completion/git-prompt.sh
+  fi
+
   PS_USER="\[${COLOUR_YELLOW}\]\u\[${COLOUR_DEFAULT}\]"
   PS_WORK="\[${COLOUR_HIGHLIGHT_WHITE}\]\W\[${COLOUR_DEFAULT}\]"
 
