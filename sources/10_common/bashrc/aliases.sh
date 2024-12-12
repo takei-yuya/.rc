@@ -41,6 +41,12 @@ function load()
   alias sudo='sudo -p "sudo:"'
   alias grep='grep --color=auto'
 
+  if [ -f /mnt/c/WINDOWS/system32/clip.exe ]; then
+    function clip() {
+      iconv -t utf-16le | /mnt/c/WINDOWS/system32/clip.exe
+    }
+  fi
+
   function t() {
     local session_name="$(basename "${PWD}")"
     if [ "${PWD}" == "${HOME}" ]; then
