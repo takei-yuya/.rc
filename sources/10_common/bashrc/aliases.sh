@@ -54,7 +54,10 @@ function load()
     fi
     case "${@}" in
       "")
-        tmux attach-session -t "${session_name}" || tmux attach-session \; choose-tree -Zs || tmux new-session -s "${session_name}"
+        tmux attach-session -t "${session_name}" || tmux attach-session \; choose-tree -Zs
+        ;;
+      "new")
+        tmux attach-session -t "${session_name}" || tmux new-session -s "${session_name}"
         ;;
       "cli")
         tmux new-session -d -t "${session_name}" -s $$ \; set-option destroy-unattached \; attach-session -t $$
