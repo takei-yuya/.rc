@@ -70,8 +70,11 @@ for d in backup bundle dein history pack undo view; do
   mkdir -p "${HOME}/.var/vim/${d}"
   ln -svTf "${HOME}/.var/vim/${d}" "${dotfile_tmp_dir}/home/vim/${d}"
 done
-if [ ! -d "${HOME}/.var/vim/pack/github/start" ]; then
-  git clone git@github.com:github/copilot.vim.git "${HOME}/.vim/pack/github/start/copilot.vim"
+if [ ! -d "${HOME}/.var/vim/pack/github/start/copilot.vim" ]; then
+  git clone git@github.com:github/copilot.vim.git "${HOME}/.var/vim/pack/github/start/copilot.vim"
+fi
+if [ ! -d "${HOME}/.var/vim/dein/repos/github.com/Shougo/dein.vim" ]; then
+  git clone git@github.com:Shougo/dein.vim.git "${HOME}/.var/vim/dein/repos/github.com/Shougo/dein.vim"
 fi
 
 log_info "Build bashrc"
