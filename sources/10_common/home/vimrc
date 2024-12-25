@@ -15,6 +15,9 @@ if version >= 802
       call dein#add('rust-lang/rust.vim')
       call dein#add('prabirshrestha/vim-lsp')
       call dein#add('mattn/vim-lsp-settings')
+      call dein#add('tpope/vim-fugitive')
+      call dein#add('vim-syntastic/syntastic')
+      call dein#add('davidhalter/jedi-vim')
       call dein#end()
       call dein#save_state()
     endif
@@ -89,7 +92,7 @@ endif
 
 set showtabline=2
 set hidden
-set nosplitbelow
+set splitbelow
 set splitright
 
 set hlsearch
