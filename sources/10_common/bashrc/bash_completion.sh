@@ -14,5 +14,8 @@ function load()
     if [ -f "/usr/share/bash-completion/completions/${prog}" ]; then
       source "/usr/share/bash-completion/completions/${prog}"
     fi
+    if [ -f "/etc/bash_completion.d/${prog}" ]; then
+      source "/etc/bash_completion.d/${prog}"
+    fi
   done
 }
