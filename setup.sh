@@ -104,14 +104,21 @@ log_info "Switch dotfiles"
 mv "${dotfile_tmp_dir}" "${dotfile_dir}"
 ln -svTf "${dotfile_dir}" dotfiles
 
+backup_dir="./backup_$(date +"%Y%m%d_%H%M%S")"
+mkdir -p "${backup_dir}"
+
 log_info "Link to home"
 for entry in dotfiles/home/*; do
   # home以下は . を先頭に付与しつつリンクを貼る
   basename="$(basename "${entry}")"
+  if [ -d "${HOME}/.${basename}" ]; then
+    mv -v "${HOME}/.${basename}" "${backup_dir}"
+  fi
   ln -svTf "${PWD}/dotfiles/home/${basename}" "${HOME}/.${basename}"
 done
 
 log_info "Link to .config"
+mkdir -p "${HOME}/.config"
 for entry in dotfiles/config/*; do
   # config以下にリンクを貼る
   basename="$(basename "${entry}")"
